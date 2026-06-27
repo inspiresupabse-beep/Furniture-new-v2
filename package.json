@@ -8,8 +8,13 @@
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
     "dev:server": "npm run dev --prefix server",
     "dev:client": "npm run dev --prefix client",
+    "postinstall": "npm install --prefix client && npm install --prefix server",
     "build": "npm run build --prefix client",
     "start": "npm run start --prefix server"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"
