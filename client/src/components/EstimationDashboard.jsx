@@ -134,19 +134,17 @@ function EstimationDashboard({ materials, hardware }) {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-[380px_1fr] gap-6 items-start">
-        {/* Input Form */}
-        <div className="rounded-xl border border-stone-200 bg-white shadow-sm">
+      <div className="rounded-xl border border-stone-200 bg-white shadow-sm mb-6">
           <div className="border-b border-stone-200 px-5 py-4">
             <h2 className="text-xs font-semibold uppercase tracking-widest text-stone-500">Input Form</h2>
           </div>
-          <div className="p-5 space-y-6 max-h-[calc(100vh-180px)] overflow-y-auto">
+          <div className="p-5 space-y-6">
             {/* Client & Product */}
             <section>
               <h3 className="text-xs font-semibold uppercase tracking-wide text-brand-dark border-b-2 border-amber-100 pb-1 mb-3">
                 Client & Product
               </h3>
-              <div className="space-y-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-2xl">
                 <div>
                   <label className="block text-xs font-medium mb-1">Client Name</label>
                   <input
@@ -179,43 +177,77 @@ function EstimationDashboard({ materials, hardware }) {
               </div>
             </section>
 
+            {/* Material Module */}
+            <section>
+              <h3 className="text-xs font-semibold uppercase tracking-wide text-brand-dark border-b-2 border-amber-100 pb-1 mb-3">
+                Material Module
+              </h3>
+              <p className="text-xs text-stone-500 mb-4">
+                Enter dimensions, board materials, and hardware before reviewing the breakdown below.
+              </p>
+              <div className="space-y-4">
+                <DimensionSection
+                  embedded
+                  formState={formState}
+                  materials={materials}
+                  onUpdate={update}
+                  onUnitChange={handleUnitChange}
+                  onStandardSizeToggle={handleStandardSizeToggle}
+                  onBedSizeChange={handleBedSizeChange}
+                />
+                <BoardSection
+                  materials={materials}
+                  productType={formState.productType}
+                  value={formState.boardState}
+                  onChange={(boardState) => update({ boardState })}
+                />
+                <HardwareSection
+                  hardware={hardware}
+                  value={formState.hardwareState}
+                  onChange={(hardwareState) => update({ hardwareState })}
+                />
+              </div>
+            </section>
+
             {/* Extras & Pricing */}
             <section>
               <h3 className="text-xs font-semibold uppercase tracking-wide text-brand-dark border-b-2 border-amber-100 pb-1 mb-3">
                 Extras & Pricing
               </h3>
-              <div className="space-y-3">
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <label className="block text-xs font-medium mb-1">Transport (₹)</label>
-                    <input type="number" min="0" className={inputClass} value={formState.transportCost}
-                      onChange={(e) => update({ transportCost: e.target.value })} />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium mb-1">Installation (₹)</label>
-                    <input type="number" min="0" className={inputClass} value={formState.installationCost}
-                      onChange={(e) => update({ installationCost: e.target.value })} />
-                  </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 max-w-4xl">
+                <div>
+                  <label className="block text-xs font-medium mb-1">Transport (₹)</label>
+                  <input type="number" min="0" className={inputClass} value={formState.transportCost}
+                    onChange={(e) => update({ transportCost: e.target.value })} />
                 </div>
-                <label className="flex items-center gap-2.5 cursor-pointer">
-                  <input type="checkbox" className="toggle-input" checked={formState.applyGst}
-                    onChange={(e) => update({ applyGst: e.target.checked })} />
-                  <span className="toggle-track" />
-                  <span className="text-xs font-medium">Apply GST (18%)</span>
-                </label>
+                <div>
+                  <label className="block text-xs font-medium mb-1">Installation (₹)</label>
+                  <input type="number" min="0" className={inputClass} value={formState.installationCost}
+                    onChange={(e) => update({ installationCost: e.target.value })} />
+                </div>
                 <div>
                   <label className="block text-xs font-medium mb-1">Margin / Discount (%)</label>
                   <input type="number" step="0.5" placeholder="Positive = margin, Negative = discount"
                     className={inputClass} value={formState.marginPercent}
                     onChange={(e) => update({ marginPercent: e.target.value })} />
                 </div>
+                <label className="flex items-center gap-2.5 cursor-pointer sm:mt-5">
+                  <input type="checkbox" className="toggle-input" checked={formState.applyGst}
+                    onChange={(e) => update({ applyGst: e.target.checked })} />
+                  <span className="toggle-track" />
+                  <span className="text-xs font-medium">Apply GST (18%)</span>
+                </label>
               </div>
             </section>
           </div>
         </div>
 
         {/* Results */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div>
+          <h2 className="text-xs font-semibold uppercase tracking-widest text-stone-500 mb-4">
+            Estimation Results
+          </h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Material */}
           <div className="rounded-xl border border-slate-200 bg-slate-50 shadow-sm">
             <div className="px-5 py-4">
@@ -380,35 +412,7 @@ function EstimationDashboard({ materials, hardware }) {
             </div>
           </div>
         </div>
-      </div>
-
-      <section className="mt-6">
-        <DimensionSection
-          formState={formState}
-          materials={materials}
-          onUpdate={update}
-          onUnitChange={handleUnitChange}
-          onStandardSizeToggle={handleStandardSizeToggle}
-          onBedSizeChange={handleBedSizeChange}
-        />
-      </section>
-
-      <section className="mt-6">
-        <BoardSection
-          materials={materials}
-          productType={formState.productType}
-          value={formState.boardState}
-          onChange={(boardState) => update({ boardState })}
-        />
-      </section>
-
-      <section className="mt-6">
-        <HardwareSection
-          hardware={hardware}
-          value={formState.hardwareState}
-          onChange={(hardwareState) => update({ hardwareState })}
-        />
-      </section>
+        </div>
     </>
   );
 }

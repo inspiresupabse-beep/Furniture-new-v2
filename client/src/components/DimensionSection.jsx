@@ -7,23 +7,13 @@ function DimensionSection({
   onUnitChange,
   onStandardSizeToggle,
   onBedSizeChange,
+  embedded = false,
 }) {
   const inputClass =
     'w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-sm focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-100 disabled:opacity-60';
 
-  return (
-    <div className="rounded-xl border border-stone-200 bg-white overflow-hidden">
-      <div className="px-4 py-3 border-b border-stone-100">
-        <div className="flex items-center gap-2 mb-1">
-          <span className="text-amber-600 text-lg leading-none">📐</span>
-          <h3 className="text-sm font-bold text-slate-800">Dimensions</h3>
-        </div>
-        <p className="text-xs text-stone-500">
-          Enter width, height and depth, then choose cm, inch or ft.
-        </p>
-      </div>
-
-      <div className="p-4 space-y-4">
+  const content = (
+    <div className={embedded ? 'space-y-4' : 'p-4 space-y-4'}>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <div>
             <label className="block text-xs font-medium mb-1">Size Mode</label>
@@ -177,6 +167,34 @@ function DimensionSection({
           )}
         </div>
       </div>
+  );
+
+  if (embedded) {
+    return (
+      <div className="rounded-xl border border-stone-200 bg-stone-50/50 overflow-hidden">
+        <div className="px-4 py-3 border-b border-stone-100 bg-white">
+          <h4 className="text-xs font-semibold uppercase tracking-wide text-amber-800">Dimensions</h4>
+          <p className="text-xs text-stone-500 mt-0.5">
+            Enter width, height and depth, then choose cm, inch or ft.
+          </p>
+        </div>
+        <div className="p-4">{content}</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-xl border border-stone-200 bg-white overflow-hidden">
+      <div className="px-4 py-3 border-b border-stone-100">
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-amber-600 text-lg leading-none">📐</span>
+          <h3 className="text-sm font-bold text-slate-800">Material Module</h3>
+        </div>
+        <p className="text-xs text-stone-500">
+          Enter width, height and depth, then choose cm, inch or ft.
+        </p>
+      </div>
+      {content}
     </div>
   );
 }
