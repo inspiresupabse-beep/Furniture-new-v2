@@ -8,6 +8,7 @@ import {
   handleListEstimates,
   handleCreateEstimate,
   handleGetEstimate,
+  handleUpdateEstimate,
   handleDeleteEstimate,
 } from './handlers/estimates.js';
 
@@ -71,6 +72,7 @@ app.post('/api/auth/signin', (req, res) => handleSignin(req, res));
 app.get('/api/estimates', (req, res) => handleListEstimates(req, res));
 app.post('/api/estimates', (req, res) => handleCreateEstimate(req, res));
 app.get('/api/estimates/:id', (req, res) => handleGetEstimate(req, res, req.params.id));
+app.put('/api/estimates/:id', (req, res) => handleUpdateEstimate(req, res, req.params.id));
 app.delete('/api/estimates/:id', (req, res) => handleDeleteEstimate(req, res, req.params.id));
 
 export default app;

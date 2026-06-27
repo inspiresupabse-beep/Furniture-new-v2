@@ -91,6 +91,48 @@ export async function handleGetEstimate(req, res, id) {
   }
 }
 
+export async function handleUpdateEstimate(req, res, id) {
+  if (req.method !== 'PUT') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  const auth = requireAuth(req, res);
+  if (!auth) return;
+
+  try {
+    const { formState, estimateData, clientName, productType, finalPrice } = req.body || {};
+
+    if (!formState || !estimateData) {
+      return res.status(400).json({ error: 'Missing estimate data' });
+    }
+
+    const supabase = getSupabaseAdmin();
+    const { data, error } = await supabase
+      .from('estimates')
+      .update({
+        client_name: clientName || formState.clientName || null,
+        product_type: productType || formState.productType,
+        form_state: formState,
+        estimate_data: estimateData,
+        final_price: Number(finalPrice ?? estimateData.finalPrice ?? 0),
+      })
+      .eq('id', id)
+      .eq('user_id', auth.userId)
+      .select('id, client_name, product_type, final_price, created_at')
+      .maybeSingle();
+
+    if (error) throw error;
+    if (!data) {
+      return res.status(404).json({ error: 'Estimate not found' });
+    }
+
+    return res.status(200).json(data);
+  } catch (err) {
+    console.error('Update estimate error:', err);
+    return res.status(500).json({ error: err.message || 'Failed to update estimate' });
+  }
+}
+
 export async function handleDeleteEstimate(req, res, id) {
   if (req.method !== 'DELETE') {
     return res.status(405).json({ error: 'Method not allowed' });

@@ -36,3 +36,18 @@ input[type="checkbox"].toggle-input:checked + .toggle-track::after {
 .client-hidden {
   @apply opacity-40 blur-[2px] pointer-events-none select-none;
 }
+
+@media print {
+  header,
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    @apply bg-white;
+  }
+
+  .print-area {
+    width: 100%;
+  }
+}

@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import EstimationDashboard from './components/EstimationDashboard';
 import AdminPanel from './components/AdminPanel';
 import AuthPage from './components/AuthPage';
-import SavedEstimates from './components/SavedEstimates';
+import EstimateReport from './components/EstimateReport';
 import ProtectedRoute from './components/ProtectedRoute';
 import { useAuth } from './context/AuthContext';
 
@@ -29,14 +29,14 @@ function AppLayout({ materials, hardware, onConfigSaved }) {
             Estimation
           </NavLink>
           <NavLink
-            to="/saved"
+            to="/reports"
             className={({ isActive }) =>
               `rounded-lg px-4 py-2 text-sm font-medium transition ${
                 isActive ? 'bg-brand text-white' : 'text-white/70 hover:text-white hover:bg-white/10'
               }`
             }
           >
-            Saved
+            Reports
           </NavLink>
           <NavLink
             to="/admin"
@@ -62,7 +62,7 @@ function AppLayout({ materials, hardware, onConfigSaved }) {
       <main className="flex-1 px-8 py-6 max-w-[1600px] mx-auto w-full">
         <Routes>
           <Route path="/" element={<EstimationDashboard materials={materials} hardware={hardware} />} />
-          <Route path="/saved" element={<SavedEstimates />} />
+          <Route path="/reports" element={<EstimateReport materials={materials} />} />
           <Route path="/admin" element={<AdminPanel materials={materials} hardware={hardware} onSave={onConfigSaved} />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
