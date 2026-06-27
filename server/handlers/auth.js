@@ -10,11 +10,8 @@ export async function handleSignup(req, res) {
     const { username, password } = req.body || {};
     const normalizedUsername = String(username || '').trim().toLowerCase();
 
-    if (normalizedUsername.length < 3) {
-      return res.status(400).json({ error: 'Username must be at least 3 characters' });
-    }
-    if (!password || String(password).length < 6) {
-      return res.status(400).json({ error: 'Password must be at least 6 characters' });
+    if (!normalizedUsername || password == null || String(password) === '') {
+      return res.status(400).json({ error: 'Username and password are required' });
     }
 
     const supabase = getSupabaseAdmin();
