@@ -8,16 +8,24 @@ function App() {
   const [hardware, setHardware] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const [error, setError] = useState(null);
+
   const fetchData = async () => {
+    setLoading(true);
+    setError(null);
     try {
       const [matRes, hwRes] = await Promise.all([
         fetch('/api/materials'),
         fetch('/api/hardware'),
       ]);
+      if (!matRes.ok || !hwRes.ok) {
+        throw new Error('Failed to load configuration from server');
+      }
       setMaterials(await matRes.json());
       setHardware(await hwRes.json());
     } catch (err) {
       console.error('Failed to load config:', err);
+      setError(err.message);
     } finally {
       setLoading(false);
     }
@@ -31,6 +39,22 @@ function App() {
     return (
       <div className="min-h-screen flex items-center justify-center text-stone-500">
         Loading configuration...
+      </div>
+    );
+  }
+
+  if (error || !materials || !hardware) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4 text-stone-600 px-6">
+        <p className="text-lg font-medium">Could not load configuration</p>
+        <p className="text-sm text-stone-500">{error || 'Configuration data is unavailable.'}</p>
+        <button
+          type="button"
+          onClick={fetchData}
+          className="rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white hover:opacity-90"
+        >
+          Retry
+        </button>
       </div>
     );
   }

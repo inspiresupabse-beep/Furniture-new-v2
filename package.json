@@ -2,6 +2,7 @@
   "name": "furniture-estimation-app",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "kill-dev-ports": "powershell -ExecutionPolicy Bypass -File scripts/kill-dev-ports.ps1",
     "predev": "npm run kill-dev-ports",
