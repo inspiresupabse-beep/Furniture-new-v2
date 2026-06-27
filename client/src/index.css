@@ -49,5 +49,6 @@ input[type="checkbox"].toggle-input:checked + .toggle-track::after {
 
   .print-area {
     width: 100%;
+    break-inside: avoid;
   }
 }
