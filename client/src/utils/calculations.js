@@ -23,6 +23,7 @@ export function getTotalMaterialArea(items) {
 }
 
 export function getBoardRate(materials, selection) {
+  if (!selection) return 0;
   const rate = materials.rates.find(
     (r) => r.category === selection.category && r.brand === selection.brand
   );
@@ -30,6 +31,7 @@ export function getBoardRate(materials, selection) {
 }
 
 export function getBoardLabel(materials, selection) {
+  if (!selection) return 'Not selected';
   const categoryLabel = materials.catalog.boardLabels[selection.category] || selection.category;
   const brandLabel = selection.brand;
   return `${categoryLabel} — ${brandLabel}`;

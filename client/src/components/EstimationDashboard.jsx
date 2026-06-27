@@ -44,9 +44,7 @@ function EstimationDashboard({ materials, hardware }) {
         width: fromInches(king.length, unit),
         height: fromInches(king.width, unit),
         depth: fromInches(18, unit),
-        boardState: {
-          ...createDefaultFormState(materials, hardware, 'bed').boardState,
-        },
+        boardState: createDefaultFormState(materials, hardware, 'bed').boardState,
         hardwareState: getDefaultBedHardwareState(hardware),
       });
     } else {

@@ -64,35 +64,12 @@ export function createInitialHardwareState(hardware) {
   return state;
 }
 
-function applyPreset(state, presets) {
-  const next = JSON.parse(JSON.stringify(state));
-  for (const preset of presets) {
-    if (!next[preset.category]?.entries[preset.rateId]) continue;
-    next[preset.category].enabled = true;
-    next[preset.category].entries[preset.rateId].qty = preset.qty;
-  }
-  return next;
-}
-
 export function getDefaultWardrobeHardwareState(hardware) {
-  const base = createInitialHardwareState(hardware);
-  return applyPreset(base, [
-    { category: 'hinges', rateId: 'hg4', qty: 4 },
-    { category: 'locks', rateId: 'lk1', qty: 1 },
-    { category: 'handles', rateId: 'hd5', qty: 4 },
-    { category: 'bushes', rateId: 'bs1', qty: 8 },
-    { category: 'edge_band', rateId: 'eb1', qty: 1 },
-  ]);
+  return createInitialHardwareState(hardware);
 }
 
 export function getDefaultBedHardwareState(hardware) {
-  const base = createInitialHardwareState(hardware);
-  return applyPreset(base, [
-    { category: 'hinges', rateId: 'hg2', qty: 4 },
-    { category: 'bushes', rateId: 'bs2', qty: 6 },
-    { category: 'misc', rateId: 'mc1', qty: 1 },
-    { category: 'misc', rateId: 'mc2', qty: 1 },
-  ]);
+  return createInitialHardwareState(hardware);
 }
 
 export function hardwareStateToItems(state, hardware) {

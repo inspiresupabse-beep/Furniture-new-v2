@@ -18,10 +18,7 @@ export function createDefaultFormState(materials, hardware, productType = 'wardr
       wastagePercent: 10,
       doors: 3,
       hasCushionHeadboard: false,
-      boardState: {
-        ...createInitialBoardState(materials),
-        box_17mm: { enabled: true, selectedBrand: 'Century' },
-      },
+      boardState: createInitialBoardState(materials),
       hardwareState: getDefaultBedHardwareState(hardware),
       transportCost: 0,
       installationCost: 0,
