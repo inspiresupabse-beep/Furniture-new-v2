@@ -7,15 +7,19 @@
     "kill-dev-ports": "powershell -ExecutionPolicy Bypass -File scripts/kill-dev-ports.ps1",
     "predev": "npm run kill-dev-ports",
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
-    "dev:server": "npm run dev --prefix server",
+    "dev:server": "node --watch server/index.js",
     "dev:client": "npm run dev --prefix client",
     "postinstall": "npm install --prefix client && npm install --prefix server",
     "build": "npm run build --prefix client",
     "start": "npm run start --prefix server"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.49.1",
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
-    "express": "^4.21.2"
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"

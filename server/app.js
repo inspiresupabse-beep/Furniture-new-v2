@@ -3,6 +3,13 @@ import cors from 'cors';
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { handleSignup, handleSignin } from './handlers/auth.js';
+import {
+  handleListEstimates,
+  handleCreateEstimate,
+  handleGetEstimate,
+  handleDeleteEstimate,
+} from './handlers/estimates.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -58,5 +65,12 @@ app.put('/api/hardware', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+app.post('/api/auth/signup', (req, res) => handleSignup(req, res));
+app.post('/api/auth/signin', (req, res) => handleSignin(req, res));
+app.get('/api/estimates', (req, res) => handleListEstimates(req, res));
+app.post('/api/estimates', (req, res) => handleCreateEstimate(req, res));
+app.get('/api/estimates/:id', (req, res) => handleGetEstimate(req, res, req.params.id));
+app.delete('/api/estimates/:id', (req, res) => handleDeleteEstimate(req, res, req.params.id));
 
 export default app;

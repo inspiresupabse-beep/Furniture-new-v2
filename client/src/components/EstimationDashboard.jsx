@@ -1,14 +1,19 @@
 import { useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import BoardSection from './BoardSection';
 import DimensionSection from './DimensionSection';
 import HardwareSection from './HardwareSection';
+import { useAuth } from '../context/AuthContext';
 import { calculateEstimate, formatCurrency, formatCurrencyDetailed } from '../utils/calculations';
 import { convertDimension, createInitialBoardState, fromInches } from '../utils/dimensionUtils';
 import { getDefaultBedHardwareState, getDefaultWardrobeHardwareState } from '../utils/hardwareUtils';
 import { generateQuotationPDF } from '../utils/pdfExport';
 
 function EstimationDashboard({ materials, hardware }) {
+  const { authFetch } = useAuth();
   const [clientView, setClientView] = useState(false);
+  const [saveStatus, setSaveStatus] = useState('');
+  const [saving, setSaving] = useState(false);
   const [formState, setFormState] = useState({
     clientName: '',
     productType: 'wardrobe',
@@ -108,12 +113,37 @@ function EstimationDashboard({ materials, hardware }) {
     generateQuotationPDF({ formState, estimate, materials, clientView });
   };
 
+  const handleSaveEstimate = async () => {
+    setSaving(true);
+    setSaveStatus('');
+    try {
+      const res = await authFetch('/api/estimates', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          formState,
+          estimateData: estimate,
+          clientName: formState.clientName,
+          productType: formState.productType,
+          finalPrice: estimate.finalPrice,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to save estimate');
+      setSaveStatus('saved');
+    } catch (err) {
+      setSaveStatus(err.message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const inputClass =
     'w-full rounded-lg border border-stone-200 bg-stone-50 px-3 py-2 text-sm focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-100 disabled:opacity-60';
 
   return (
     <>
-      <div className="flex flex-wrap gap-3 mb-6">
+      <div className="flex flex-wrap items-center gap-3 mb-6">
         <button
           type="button"
           onClick={() => setClientView(!clientView)}
@@ -127,11 +157,30 @@ function EstimationDashboard({ materials, hardware }) {
         </button>
         <button
           type="button"
+          onClick={handleSaveEstimate}
+          disabled={saving}
+          className="rounded-lg border border-violet-200 bg-violet-50 px-4 py-2 text-sm font-medium text-violet-800 hover:bg-violet-100 transition disabled:opacity-60"
+        >
+          {saving ? 'Saving...' : 'Save Estimate'}
+        </button>
+        <button
+          type="button"
           onClick={handleDownloadPDF}
           className="rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark transition"
         >
           Download Quotation
         </button>
+        {saveStatus === 'saved' && (
+          <span className="text-sm text-green-700">
+            Saved!{' '}
+            <Link to="/saved" className="font-medium underline">
+              View saved estimates
+            </Link>
+          </span>
+        )}
+        {saveStatus && saveStatus !== 'saved' && (
+          <span className="text-sm text-red-600">{saveStatus}</span>
+        )}
       </div>
 
       <div className="rounded-xl border border-stone-200 bg-white shadow-sm mb-6">
