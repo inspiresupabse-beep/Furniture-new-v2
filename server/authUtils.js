@@ -3,8 +3,13 @@ import jwt from 'jsonwebtoken';
 
 const SALT_ROUNDS = 10;
 
+function cleanEnv(value) {
+  if (!value) return '';
+  return String(value).trim().replace(/^['"]|['"]$/g, '');
+}
+
 function getJwtSecret() {
-  const secret = process.env.JWT_SECRET;
+  const secret = cleanEnv(process.env.JWT_SECRET);
   if (!secret) {
     throw new Error('Missing JWT_SECRET environment variable');
   }
