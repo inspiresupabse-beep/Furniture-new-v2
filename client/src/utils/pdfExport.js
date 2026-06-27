@@ -6,6 +6,7 @@ export function generateQuotationPDF({
   formState,
   estimate,
   materials,
+  estimateNumber,
   clientView,
 }) {
   const doc = new jsPDF();
@@ -30,6 +31,9 @@ export function generateQuotationPDF({
   doc.setFontSize(16);
   doc.setFont('helvetica', 'bold');
   doc.text('QUOTATION', pageWidth - 14, 55, { align: 'right' });
+  if (estimateNumber) {
+    doc.text(estimateNumber, pageWidth - 14, 62, { align: 'right' });
+  }
 
   doc.setFontSize(10);
   doc.setFont('helvetica', 'normal');
@@ -191,6 +195,8 @@ export function generateQuotationPDF({
     doc.internal.pageSize.getHeight() - 10
   );
 
-  const filename = `Quotation_${productLabel}_${formState.clientName || 'Draft'}_${Date.now()}.pdf`;
+  const filename = estimateNumber
+    ? `${estimateNumber}_${formState.clientName || 'Draft'}.pdf`
+    : `Quotation_${productLabel}_${formState.clientName || 'Draft'}_${Date.now()}.pdf`;
   doc.save(filename.replace(/\s+/g, '_'));
 }

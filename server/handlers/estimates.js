@@ -1,5 +1,6 @@
 import { getSupabaseAdmin } from '../supabaseAdmin.js';
 import { requireAuth } from '../authUtils.js';
+import { insertEstimateWithNumber } from '../estimateNumber.js';
 
 export async function handleListEstimates(req, res) {
   if (req.method !== 'GET') {
@@ -13,7 +14,7 @@ export async function handleListEstimates(req, res) {
     const supabase = getSupabaseAdmin();
     const { data, error } = await supabase
       .from('estimates')
-      .select('id, client_name, product_type, final_price, created_at')
+      .select('id, client_name, product_type, final_price, estimate_number, created_at')
       .eq('user_id', auth.userId)
       .order('created_at', { ascending: false });
 
@@ -41,18 +42,14 @@ export async function handleCreateEstimate(req, res) {
     }
 
     const supabase = getSupabaseAdmin();
-    const { data, error } = await supabase
-      .from('estimates')
-      .insert({
-        user_id: auth.userId,
-        client_name: clientName || formState.clientName || null,
-        product_type: productType || formState.productType,
-        form_state: formState,
-        estimate_data: estimateData,
-        final_price: Number(finalPrice ?? estimateData.finalPrice ?? 0),
-      })
-      .select('id, client_name, product_type, final_price, created_at')
-      .single();
+    const { data, error } = await insertEstimateWithNumber(supabase, {
+      user_id: auth.userId,
+      client_name: clientName || formState.clientName || null,
+      product_type: productType || formState.productType,
+      form_state: formState,
+      estimate_data: estimateData,
+      final_price: Number(finalPrice ?? estimateData.finalPrice ?? 0),
+    });
 
     if (error) throw error;
     return res.status(201).json(data);
@@ -118,7 +115,7 @@ export async function handleUpdateEstimate(req, res, id) {
       })
       .eq('id', id)
       .eq('user_id', auth.userId)
-      .select('id, client_name, product_type, final_price, created_at')
+      .select('id, client_name, product_type, final_price, estimate_number, created_at')
       .maybeSingle();
 
     if (error) throw error;

@@ -1,4 +1,4 @@
-import { Routes, Route, NavLink, Navigate } from 'react-router-dom';
+import { Routes, Route, NavLink, Navigate, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import EstimationDashboard from './components/EstimationDashboard';
 import AdminPanel from './components/AdminPanel';
@@ -9,10 +9,12 @@ import { useAuth } from './context/AuthContext';
 
 function AppLayout({ materials, hardware, onConfigSaved }) {
   const { user, logout } = useAuth();
+  const location = useLocation();
+  const isEstimation = location.pathname === '/';
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="sticky top-0 z-50 bg-navy text-white shadow-lg px-8 h-16 flex items-center justify-between">
+      <header className="sticky top-0 z-50 bg-navy text-white shadow-lg px-4 sm:px-8 h-16 flex items-center justify-between">
         <h1 className="font-display text-2xl tracking-wide">
           Furniture<span className="text-brand">Est</span>
         </h1>
@@ -59,7 +61,13 @@ function AppLayout({ materials, hardware, onConfigSaved }) {
           </button>
         </nav>
       </header>
-      <main className="flex-1 px-8 py-6 max-w-[1600px] mx-auto w-full">
+      <main
+        className={`flex-1 w-full py-4 sm:py-6 ${
+          isEstimation
+            ? 'px-4 sm:px-6 lg:px-8 max-w-[1800px] mx-auto'
+            : 'px-4 sm:px-8 max-w-[1600px] mx-auto'
+        }`}
+      >
         <Routes>
           <Route path="/" element={<EstimationDashboard materials={materials} hardware={hardware} />} />
           <Route path="/reports" element={<EstimateReport materials={materials} />} />

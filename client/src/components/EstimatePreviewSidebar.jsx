@@ -1,20 +1,45 @@
 import { formatCurrency, formatCurrencyDetailed } from '../utils/calculations';
 
-function BreakdownLine({ label, detail, amount, muted }) {
+function Row({ label, amount, bold, muted, sub }) {
   return (
-    <div className={`py-1.5 ${muted ? 'text-stone-400' : 'text-stone-600'}`}>
-      <div className="text-xs font-medium text-stone-700">{label}</div>
-      {detail && <div className="text-[11px] text-stone-400 mt-0.5">{detail}</div>}
-      <div className="text-xs font-semibold text-stone-800 tabular-nums text-right -mt-4">
+    <div className={`flex items-start justify-between gap-4 py-1 ${sub ? 'pl-4' : ''}`}>
+      <span
+        className={`text-sm leading-snug ${
+          bold ? 'font-semibold text-slate-800' : muted ? 'text-slate-400 text-xs' : 'text-slate-600'
+        }`}
+      >
+        {label}
+      </span>
+      <span
+        className={`tabular-nums shrink-0 text-sm ${
+          bold ? 'font-semibold text-slate-900' : muted ? 'text-slate-400 text-xs' : 'text-slate-700'
+        }`}
+      >
         {formatCurrencyDetailed(amount)}
+      </span>
+    </div>
+  );
+}
+
+function DetailRow({ label, detail, amount }) {
+  return (
+    <div className="flex items-start justify-between gap-4 py-1 pl-4">
+      <div className="min-w-0">
+        <div className="text-xs text-slate-500">{label}</div>
+        {detail && <div className="text-[11px] text-slate-400 mt-0.5">{detail}</div>}
       </div>
+      <span className="tabular-nums shrink-0 text-xs font-medium text-slate-700">
+        {formatCurrencyDetailed(amount)}
+      </span>
     </div>
   );
 }
 
 function EstimatePreviewSidebar({
+  materials,
   formState,
   estimate,
+  estimateNumber,
   applyGst,
   clientView,
   onToggleClientView,
@@ -26,6 +51,7 @@ function EstimatePreviewSidebar({
   saveStatus,
   editingId,
 }) {
+  const company = materials?.company ?? {};
   const productLabel = formState.productType === 'wardrobe' ? 'Wardrobe' : 'Bed';
   const today = new Date().toLocaleDateString('en-IN', {
     day: 'numeric',
@@ -34,157 +60,132 @@ function EstimatePreviewSidebar({
   });
 
   return (
-    <div className="rounded-xl border border-stone-200 bg-white shadow-sm overflow-hidden no-print">
-      <div className="px-4 py-3 border-b border-stone-100 bg-stone-50/80 grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
+    <div className="rounded-lg border border-stone-200 bg-white shadow-md overflow-hidden no-print">
+      {/* Document header */}
+      <div className="bg-navy text-white px-5 py-4 flex items-start justify-between gap-4">
+        <div className="flex items-start gap-3 min-w-0">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-white/15 text-lg font-bold">
+            ₹
+          </div>
+          <div className="min-w-0">
+            <div className="font-bold text-base leading-tight truncate">{company.name || 'Furniture Est'}</div>
+            <div className="text-[11px] text-white/65 mt-0.5 leading-snug">
+              {company.tagline || 'Particle Board Furniture Manufacturing'}
+            </div>
+          </div>
+        </div>
+        <div className="text-right shrink-0">
+          <div className="text-[10px] uppercase tracking-wider text-white/55">Estimate No.</div>
+          <div className="font-bold text-sm mt-0.5 font-mono">{estimateNumber || '—'}</div>
+        </div>
+      </div>
+
+      {/* Client / product meta */}
+      <div className="px-5 py-4 grid grid-cols-2 gap-x-6 gap-y-3 border-b border-stone-100 text-sm">
         <div>
-          <div className="text-[10px] uppercase tracking-wide text-stone-400">Product</div>
-          <div className="font-semibold text-stone-800 capitalize">{formState.productType || '—'}</div>
+          <div className="text-[10px] uppercase tracking-wide text-stone-400 mb-0.5">Product</div>
+          <div className="font-medium text-slate-800 capitalize">{formState.productType || '—'}</div>
         </div>
         <div>
-          <div className="text-[10px] uppercase tracking-wide text-stone-400">Client</div>
-          <div className="font-medium text-stone-700 truncate">{formState.clientName || '—'}</div>
+          <div className="text-[10px] uppercase tracking-wide text-stone-400 mb-0.5">Client</div>
+          <div className="font-medium text-slate-800 truncate">{formState.clientName || '—'}</div>
         </div>
         <div>
-          <div className="text-[10px] uppercase tracking-wide text-stone-400">Date</div>
-          <div className="font-medium text-stone-700">{today}</div>
+          <div className="text-[10px] uppercase tracking-wide text-stone-400 mb-0.5">Date</div>
+          <div className="font-medium text-slate-800">{today}</div>
         </div>
         <div>
-          <div className="text-[10px] uppercase tracking-wide text-stone-400">Type / Area</div>
-          <div className="font-medium text-stone-700">
-            {productLabel} · {estimate.materialTotalArea.toFixed(2)} sq ft
+          <div className="text-[10px] uppercase tracking-wide text-stone-400 mb-0.5">Type / Area</div>
+          <div className="font-medium text-slate-800">
+            {productLabel} · {estimate.materialTotalArea.toFixed(2)} Sq.Ft.
           </div>
         </div>
       </div>
 
-      <div className="px-4 py-4 space-y-4 max-h-[calc(100vh-420px)] overflow-y-auto">
-        <h3 className="text-[10px] font-bold uppercase tracking-widest text-stone-400">
+      {/* Cost breakdown — full height, no inner scroll trap */}
+      <div className="px-5 py-4 space-y-4">
+        <h3 className="text-[11px] font-bold uppercase tracking-widest text-stone-400">
           Cost Breakdown
         </h3>
 
-        <div>
-          <div className="flex items-center justify-between text-sm font-semibold text-stone-800 mb-2">
-            <span>Material Cost</span>
-            <span className="tabular-nums">{formatCurrencyDetailed(estimate.materialCost)}</span>
-          </div>
-          <div className="space-y-1 border-l-2 border-indigo-100 pl-3 ml-0.5">
-            {estimate.materialItems.map((item, i) => (
-              <BreakdownLine
-                key={i}
-                label={item.name}
-                detail={
-                  item.isFixed
-                    ? item.spec
-                    : `${item.area.toFixed(2)} sq ft × ${formatCurrencyDetailed(item.rate)}`
-                }
-                amount={item.cost}
-              />
-            ))}
-          </div>
+        <div className="space-y-1">
+          <Row label="Material Cost" amount={estimate.materialCost} bold />
+          {estimate.materialItems.map((item, i) => (
+            <DetailRow
+              key={i}
+              label={item.name}
+              detail={
+                item.isFixed
+                  ? item.spec
+                  : `${item.area.toFixed(2)} sq ft × ${formatCurrencyDetailed(item.rate)}`
+              }
+              amount={item.cost}
+            />
+          ))}
         </div>
 
         {!clientView && (
-          <div>
-            <div className="flex items-center justify-between text-sm font-semibold text-stone-800 mb-2">
-              <span>Labor (45% of material)</span>
-              <span className="tabular-nums">{formatCurrencyDetailed(estimate.labor.total)}</span>
-            </div>
-            <div className="space-y-1 border-l-2 border-indigo-100 pl-3 ml-0.5 text-xs text-stone-500">
-              <div className="flex justify-between py-1">
-                <span>Cutting (15%)</span>
-                <span className="tabular-nums font-medium text-stone-700">
-                  {formatCurrencyDetailed(estimate.labor.cutting)}
-                </span>
-              </div>
-              <div className="flex justify-between py-1">
-                <span>Edge Banding (15%)</span>
-                <span className="tabular-nums font-medium text-stone-700">
-                  {formatCurrencyDetailed(estimate.labor.edgeBanding)}
-                </span>
-              </div>
-              <div className="flex justify-between py-1">
-                <span>Assembling (15%)</span>
-                <span className="tabular-nums font-medium text-stone-700">
-                  {formatCurrencyDetailed(estimate.labor.assembling)}
-                </span>
-              </div>
-            </div>
+          <div className="space-y-1">
+            <Row label="Labor (45% of material)" amount={estimate.labor.total} bold />
+            <Row label="Cutting (15%)" amount={estimate.labor.cutting} muted sub />
+            <Row label="Edge Banding (15%)" amount={estimate.labor.edgeBanding} muted sub />
+            <Row label="Assembling (15%)" amount={estimate.labor.assembling} muted sub />
           </div>
         )}
 
-        <div>
-          <div className="flex items-center justify-between text-sm font-semibold text-stone-800 mb-2">
-            <span>Hardware & Accessories</span>
-            <span className="tabular-nums">{formatCurrencyDetailed(estimate.hardwareCost)}</span>
-          </div>
-          {estimate.hardwareItems.length > 0 ? (
-            <div className="space-y-1 border-l-2 border-indigo-100 pl-3 ml-0.5">
-              {estimate.hardwareItems.map((item, i) => (
-                <BreakdownLine
-                  key={i}
-                  label={item.name}
-                  detail={`${item.qty} × ${formatCurrencyDetailed(item.unitPrice)}`}
-                  amount={item.cost}
-                />
-              ))}
-            </div>
-          ) : (
-            <p className="text-xs text-stone-400 pl-3 border-l-2 border-indigo-100 ml-0.5">
-              No hardware selected
-            </p>
-          )}
+        <div className="space-y-1">
+          <Row label="Hardware & Accessories" amount={estimate.hardwareCost} bold />
+          {estimate.hardwareItems.map((item, i) => (
+            <DetailRow
+              key={i}
+              label={item.name}
+              detail={`${item.qty} × ${formatCurrencyDetailed(item.unitPrice)}`}
+              amount={item.cost}
+            />
+          ))}
         </div>
 
         {estimate.transportCost > 0 && (
-          <div className="flex justify-between text-sm text-stone-700">
-            <span>Transport</span>
-            <span className="tabular-nums font-medium">{formatCurrency(estimate.transportCost)}</span>
-          </div>
+          <Row label="Transport" amount={estimate.transportCost} />
         )}
         {estimate.installationCost > 0 && (
-          <div className="flex justify-between text-sm text-stone-700">
-            <span>Installation</span>
-            <span className="tabular-nums font-medium">{formatCurrency(estimate.installationCost)}</span>
-          </div>
+          <Row label="Installation" amount={estimate.installationCost} />
         )}
-      </div>
 
-      <div className="px-4 pb-4 space-y-3 border-t border-stone-100 pt-4 bg-stone-50/50">
-        <div className="space-y-1.5 text-sm">
-          <div className="flex justify-between text-stone-600">
-            <span>Subtotal</span>
-            <span className="tabular-nums font-medium">{formatCurrencyDetailed(estimate.subtotal)}</span>
-          </div>
-          {applyGst && (
-            <div className="flex justify-between text-stone-500">
-              <span>GST (18%)</span>
-              <span className="tabular-nums">{formatCurrencyDetailed(estimate.gstAmount)}</span>
-            </div>
-          )}
+        <div className="pt-2 border-t border-stone-100 space-y-1.5">
+          <Row label="Subtotal" amount={estimate.subtotal} bold />
+          {applyGst && <Row label="GST (18%)" amount={estimate.gstAmount} muted />}
           {!clientView && Number(formState.marginPercent) !== 0 && (
-            <div className="flex justify-between text-stone-500">
-              <span>
-                {Number(formState.marginPercent) > 0 ? 'Margin' : 'Discount'} ({formState.marginPercent}%)
-              </span>
-              <span className="tabular-nums">{formatCurrencyDetailed(estimate.marginAmount)}</span>
-            </div>
+            <Row
+              label={`${Number(formState.marginPercent) > 0 ? 'Margin' : 'Discount'} (${formState.marginPercent}%)`}
+              amount={estimate.marginAmount}
+              muted
+            />
           )}
         </div>
 
-        <div className="flex items-center justify-between rounded-xl bg-indigo-600 px-4 py-3.5 text-white shadow-sm">
+        <div className="flex items-center justify-between rounded-lg bg-indigo-600 px-4 py-3.5 text-white">
           <span className="font-semibold">Grand Total</span>
           <span className="text-xl font-bold tabular-nums">{formatCurrencyDetailed(estimate.finalPrice)}</span>
+        </div>
+      </div>
+
+      {/* Actions */}
+      <div className="px-5 pb-5 space-y-2.5 border-t border-stone-100 pt-4 bg-stone-50/60">
+        <div className="flex items-center justify-center gap-1.5 text-[10px] font-medium text-emerald-700 mb-1">
+          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+          Live preview — updates as you type
         </div>
 
         <button
           type="button"
           onClick={onToggleClientView}
-          className={`w-full flex items-center justify-center gap-2 rounded-xl border py-2.5 text-sm font-medium transition ${
+          className={`w-full flex items-center justify-center gap-2 rounded-lg border py-2.5 text-sm font-medium transition ${
             clientView
               ? 'border-indigo-300 bg-indigo-50 text-indigo-800'
               : 'border-stone-200 bg-white text-stone-700 hover:bg-stone-50'
           }`}
         >
-          <span>👁</span>
           Client view (hide labor detail)
         </button>
 
@@ -192,9 +193,8 @@ function EstimatePreviewSidebar({
           type="button"
           onClick={onSave}
           disabled={saving}
-          className="w-full flex items-center justify-center gap-2 rounded-xl bg-indigo-600 py-3 text-sm font-semibold text-white hover:bg-indigo-700 transition disabled:opacity-60 shadow-sm"
+          className="w-full flex items-center justify-center gap-2 rounded-lg bg-indigo-600 py-3 text-sm font-semibold text-white hover:bg-indigo-700 transition disabled:opacity-60"
         >
-          <span>💾</span>
           {saving ? 'Saving...' : editingId ? 'Update Estimate' : 'Save Estimate'}
         </button>
 
@@ -209,22 +209,22 @@ function EstimatePreviewSidebar({
           <button
             type="button"
             onClick={onDownloadPdf}
-            className="flex items-center justify-center gap-1.5 rounded-xl border border-stone-200 bg-white py-2.5 text-sm font-medium text-stone-700 hover:bg-stone-50 transition"
+            className="rounded-lg border border-stone-200 bg-white py-2.5 text-sm font-medium text-stone-700 hover:bg-stone-50 transition"
           >
-            <span>📄</span> PDF
+            PDF
           </button>
           <button
             type="button"
             onClick={onPrint}
-            className="flex items-center justify-center gap-1.5 rounded-xl border border-stone-200 bg-white py-2.5 text-sm font-medium text-stone-700 hover:bg-stone-50 transition"
+            className="rounded-lg border border-stone-200 bg-white py-2.5 text-sm font-medium text-stone-700 hover:bg-stone-50 transition"
           >
-            <span>🖨</span> Print
+            Print
           </button>
           <button
             type="button"
             onClick={onReset}
             title="Reset form"
-            className="flex items-center justify-center rounded-xl border border-stone-200 bg-white px-4 py-2.5 text-sm font-medium text-stone-700 hover:bg-stone-50 transition"
+            className="rounded-lg border border-stone-200 bg-white px-4 py-2.5 text-sm font-medium text-stone-700 hover:bg-stone-50 transition"
           >
             ↺
           </button>

@@ -72,13 +72,15 @@ function EstimateReport({ materials }) {
         estimate: data.estimate_data,
         materials,
         clientView: false,
+        estimateNumber: data.estimate_number,
       });
     } catch (err) {
       alert(err.message);
     }
   };
 
-  const invoiceRef = (id) => id.slice(0, 8).toUpperCase();
+  const displayEstimateNumber = (item) =>
+    item.estimate_number || item.id.slice(0, 8).toUpperCase();
 
   if (loading) {
     return <div className="text-stone-500 py-12 text-center">Loading estimate report...</div>;
@@ -130,7 +132,7 @@ function EstimateReport({ materials }) {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-stone-200 bg-stone-50 text-left text-xs uppercase tracking-wide text-stone-500">
-                <th className="px-5 py-3">Invoice #</th>
+                <th className="px-5 py-3">Estimate #</th>
                 <th className="px-5 py-3">Customer</th>
                 <th className="px-5 py-3">Product</th>
                 <th className="px-5 py-3">Grand Total</th>
@@ -141,7 +143,9 @@ function EstimateReport({ materials }) {
             <tbody>
               {filtered.map((item) => (
                 <tr key={item.id} className="border-b border-stone-100 last:border-0 hover:bg-stone-50/50">
-                  <td className="px-5 py-3 font-mono text-xs text-stone-600">{invoiceRef(item.id)}</td>
+                  <td className="px-5 py-3 font-mono text-xs font-semibold text-indigo-700">
+                    {displayEstimateNumber(item)}
+                  </td>
                   <td className="px-5 py-3 font-medium">{item.client_name || '—'}</td>
                   <td className="px-5 py-3 capitalize">{item.product_type}</td>
                   <td className="px-5 py-3 tabular-nums font-semibold">{formatCurrency(item.final_price)}</td>

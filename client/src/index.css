@@ -37,6 +37,56 @@ input[type="checkbox"].toggle-input:checked + .toggle-track::after {
   @apply opacity-40 blur-[2px] pointer-events-none select-none;
 }
 
+/* Responsive split-pane estimation dashboard */
+.dashboard-split {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+@media (min-width: 1024px) {
+  .dashboard-split {
+    grid-template-columns: minmax(0, 1fr) minmax(420px, 48%);
+    gap: 0;
+    min-height: calc(100vh - 7rem);
+    border-radius: 0.75rem;
+    border: 1px solid rgb(231 229 228);
+    background: white;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.06);
+    overflow: hidden;
+    align-items: stretch;
+  }
+
+  .dashboard-split__forms {
+    min-width: 0;
+    max-height: calc(100vh - 7rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border-right: 1px solid rgb(231 229 228);
+  }
+
+  .dashboard-split__preview {
+    min-width: 0;
+    background: rgb(248 250 252);
+    max-height: calc(100vh - 7rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .dashboard-split__preview-sticky {
+    position: sticky;
+    top: 0;
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 1023px) {
+  .dashboard-split__preview-sticky {
+    padding: 0;
+  }
+}
+
 @media print {
   header,
   .no-print {
