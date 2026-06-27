@@ -1,0 +1,375 @@
+{
+  "catalog": {
+    "l_clamp": [
+      "4-hole",
+      "2-hole"
+    ],
+    "edge_band": [
+      "2mm",
+      "1.3mm",
+      "0.5mm"
+    ],
+    "locks": {
+      "brands": [
+        "Champion",
+        "Elephant",
+        "Bonus"
+      ],
+      "clamps": [
+        "Steel",
+        "Normal"
+      ]
+    },
+    "hinges": [
+      "Germo",
+      "Normal",
+      "Spider",
+      "Soft-close"
+    ],
+    "bushes": [
+      "Wardrobe",
+      "Cot",
+      "Cabinet"
+    ],
+    "sliders": {
+      "brands": [
+        "Germo",
+        "Spider",
+        "Ebco"
+      ],
+      "sizes": [
+        "10 inch",
+        "12 inch",
+        "14 inch"
+      ]
+    },
+    "handles": {
+      "types": [
+        "Cabinet (3,4 inch)",
+        "Pipe (6,8,16 inch)",
+        "V-type Black (2-24 inch)",
+        "Wooden (6-24 inch)",
+        "Premium Black (4-36 inch)",
+        "Premium Gold (4-36 inch)"
+      ]
+    },
+    "misc": [
+      "Screws",
+      "Glue",
+      "Foam Fix Glue",
+      "Magnets (Heavy/Normal)",
+      "Hanger Socket (Premium/Normal)",
+      "Legs (Black/Wood/Gold)"
+    ]
+  },
+  "hardwareLabels": {
+    "l_clamp": "L-Clamp",
+    "edge_band": "Edge Band",
+    "locks": "Lock",
+    "hinges": "Hinge",
+    "bushes": "Bush",
+    "sliders": "Slider",
+    "handles": "Handle",
+    "misc": "Miscellaneous"
+  },
+  "hardwareMainLabels": {
+    "l_clamp": "L-CLAMP",
+    "edge_band": "EDGE BAND",
+    "locks": "LOCKS",
+    "hinges": "HINGES",
+    "bushes": "BUSHES",
+    "sliders": "SLIDERS / CHANNELS",
+    "handles": "HANDLES",
+    "misc": "MISCELLANEOUS"
+  },
+  "rates": [
+    {
+      "id": "lc1",
+      "category": "l_clamp",
+      "variant": "4-hole",
+      "unitPrice": 45,
+      "defaultQty": 1
+    },
+    {
+      "id": "lc2",
+      "category": "l_clamp",
+      "variant": "2-hole",
+      "unitPrice": 30,
+      "defaultQty": 1
+    },
+    {
+      "id": "eb1",
+      "category": "edge_band",
+      "variant": "2mm",
+      "unitPrice": 18,
+      "defaultQty": 1
+    },
+    {
+      "id": "eb2",
+      "category": "edge_band",
+      "variant": "1.3mm",
+      "unitPrice": 14,
+      "defaultQty": 1
+    },
+    {
+      "id": "eb3",
+      "category": "edge_band",
+      "variant": "0.5mm",
+      "unitPrice": 10,
+      "defaultQty": 1
+    },
+    {
+      "id": "lk1",
+      "category": "locks",
+      "brand": "Champion",
+      "clamp": "Steel",
+      "unitPrice": 320,
+      "defaultQty": 1
+    },
+    {
+      "id": "lk2",
+      "category": "locks",
+      "brand": "Champion",
+      "clamp": "Normal",
+      "unitPrice": 220,
+      "defaultQty": 1
+    },
+    {
+      "id": "lk3",
+      "category": "locks",
+      "brand": "Elephant",
+      "clamp": "Steel",
+      "unitPrice": 280,
+      "defaultQty": 1
+    },
+    {
+      "id": "lk4",
+      "category": "locks",
+      "brand": "Elephant",
+      "clamp": "Normal",
+      "unitPrice": 180,
+      "defaultQty": 1
+    },
+    {
+      "id": "lk5",
+      "category": "locks",
+      "brand": "Bonus",
+      "clamp": "Steel",
+      "unitPrice": 250,
+      "defaultQty": 1
+    },
+    {
+      "id": "lk6",
+      "category": "locks",
+      "brand": "Bonus",
+      "clamp": "Normal",
+      "unitPrice": 150,
+      "defaultQty": 1
+    },
+    {
+      "id": "hg1",
+      "category": "hinges",
+      "variant": "Germo",
+      "unitPrice": 280,
+      "defaultQty": 4
+    },
+    {
+      "id": "hg2",
+      "category": "hinges",
+      "variant": "Normal",
+      "unitPrice": 120,
+      "defaultQty": 4
+    },
+    {
+      "id": "hg3",
+      "category": "hinges",
+      "variant": "Spider",
+      "unitPrice": 200,
+      "defaultQty": 4
+    },
+    {
+      "id": "hg4",
+      "category": "hinges",
+      "variant": "Soft-close",
+      "unitPrice": 350,
+      "defaultQty": 1
+    },
+    {
+      "id": "bs1",
+      "category": "bushes",
+      "variant": "Wardrobe",
+      "unitPrice": 25,
+      "defaultQty": 81
+    },
+    {
+      "id": "bs2",
+      "category": "bushes",
+      "variant": "Cot",
+      "unitPrice": 20,
+      "defaultQty": 1
+    },
+    {
+      "id": "bs3",
+      "category": "bushes",
+      "variant": "Cabinet",
+      "unitPrice": 18,
+      "defaultQty": 1
+    },
+    {
+      "id": "sl1",
+      "category": "sliders",
+      "brand": "Germo",
+      "size": "10 inch",
+      "unitPrice": 450,
+      "defaultQty": 2
+    },
+    {
+      "id": "sl2",
+      "category": "sliders",
+      "brand": "Germo",
+      "size": "12 inch",
+      "unitPrice": 520,
+      "defaultQty": 2
+    },
+    {
+      "id": "sl3",
+      "category": "sliders",
+      "brand": "Germo",
+      "size": "14 inch",
+      "unitPrice": 580,
+      "defaultQty": 2
+    },
+    {
+      "id": "sl4",
+      "category": "sliders",
+      "brand": "Spider",
+      "size": "10 inch",
+      "unitPrice": 380,
+      "defaultQty": 2
+    },
+    {
+      "id": "sl5",
+      "category": "sliders",
+      "brand": "Spider",
+      "size": "12 inch",
+      "unitPrice": 440,
+      "defaultQty": 2
+    },
+    {
+      "id": "sl6",
+      "category": "sliders",
+      "brand": "Spider",
+      "size": "14 inch",
+      "unitPrice": 500,
+      "defaultQty": 2
+    },
+    {
+      "id": "sl7",
+      "category": "sliders",
+      "brand": "Ebco",
+      "size": "10 inch",
+      "unitPrice": 420,
+      "defaultQty": 2
+    },
+    {
+      "id": "sl8",
+      "category": "sliders",
+      "brand": "Ebco",
+      "size": "12 inch",
+      "unitPrice": 480,
+      "defaultQty": 2
+    },
+    {
+      "id": "sl9",
+      "category": "sliders",
+      "brand": "Ebco",
+      "size": "14 inch",
+      "unitPrice": 540,
+      "defaultQty": 2
+    },
+    {
+      "id": "hd1",
+      "category": "handles",
+      "handleType": "Cabinet (3,4 inch)",
+      "unitPrice": 80,
+      "defaultQty": 4
+    },
+    {
+      "id": "hd2",
+      "category": "handles",
+      "handleType": "Pipe (6,8,16 inch)",
+      "unitPrice": 120,
+      "defaultQty": 2
+    },
+    {
+      "id": "hd3",
+      "category": "handles",
+      "handleType": "V-type Black (2-24 inch)",
+      "unitPrice": 150,
+      "defaultQty": 2
+    },
+    {
+      "id": "hd4",
+      "category": "handles",
+      "handleType": "Wooden (6-24 inch)",
+      "unitPrice": 180,
+      "defaultQty": 2
+    },
+    {
+      "id": "hd5",
+      "category": "handles",
+      "handleType": "Premium Black (4-36 inch)",
+      "unitPrice": 220,
+      "defaultQty": 2
+    },
+    {
+      "id": "hd6",
+      "category": "handles",
+      "handleType": "Premium Gold (4-36 inch)",
+      "unitPrice": 280,
+      "defaultQty": 2
+    },
+    {
+      "id": "mc1",
+      "category": "misc",
+      "variant": "Screws",
+      "unitPrice": 150,
+      "defaultQty": 1
+    },
+    {
+      "id": "mc2",
+      "category": "misc",
+      "variant": "Glue",
+      "unitPrice": 80,
+      "defaultQty": 1
+    },
+    {
+      "id": "mc3",
+      "category": "misc",
+      "variant": "Foam Fix Glue",
+      "unitPrice": 120,
+      "defaultQty": 1
+    },
+    {
+      "id": "mc4",
+      "category": "misc",
+      "variant": "Magnets (Heavy/Normal)",
+      "unitPrice": 60,
+      "defaultQty": 2
+    },
+    {
+      "id": "mc5",
+      "category": "misc",
+      "variant": "Hanger Socket (Premium/Normal)",
+      "unitPrice": 90,
+      "defaultQty": 2
+    },
+    {
+      "id": "mc6",
+      "category": "misc",
+      "variant": "Legs (Black/Wood/Gold)",
+      "unitPrice": 200,
+      "defaultQty": 4
+    }
+  ]
+}

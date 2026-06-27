@@ -1,0 +1,17 @@
+{
+  "name": "furniture-estimation-app",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "kill-dev-ports": "powershell -ExecutionPolicy Bypass -File scripts/kill-dev-ports.ps1",
+    "predev": "npm run kill-dev-ports",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "npm run dev --prefix server",
+    "dev:client": "npm run dev --prefix client",
+    "build": "npm run build --prefix client",
+    "start": "npm run start --prefix server"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

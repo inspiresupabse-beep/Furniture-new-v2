@@ -1,0 +1,146 @@
+{
+  "catalog": {
+    "boards": {
+      "box_17mm": [
+        "Century",
+        "Merino",
+        "Panalex",
+        "K-board"
+      ],
+      "door_17mm": [
+        "Century",
+        "Merino",
+        "Panalex",
+        "K-board",
+        "UV-Finish"
+      ],
+      "board_9mm": [
+        "Century",
+        "K-board"
+      ],
+      "multiwood": [
+        "17mm",
+        "12mm",
+        "4mm"
+      ]
+    },
+    "boardLabels": {
+      "box_17mm": "Box Board (17mm)",
+      "door_17mm": "Door Board (17mm)",
+      "board_9mm": "Backing Board (9mm)",
+      "multiwood": "Multiwood"
+    }
+  },
+  "rates": [
+    {
+      "id": "b1",
+      "category": "box_17mm",
+      "brand": "Century",
+      "pricePerSqft": 95
+    },
+    {
+      "id": "b2",
+      "category": "box_17mm",
+      "brand": "Merino",
+      "pricePerSqft": 90
+    },
+    {
+      "id": "b3",
+      "category": "box_17mm",
+      "brand": "Panalex",
+      "pricePerSqft": 85
+    },
+    {
+      "id": "b4",
+      "category": "box_17mm",
+      "brand": "K-board",
+      "pricePerSqft": 75
+    },
+    {
+      "id": "d1",
+      "category": "door_17mm",
+      "brand": "Century",
+      "pricePerSqft": 110
+    },
+    {
+      "id": "d2",
+      "category": "door_17mm",
+      "brand": "Merino",
+      "pricePerSqft": 105
+    },
+    {
+      "id": "d3",
+      "category": "door_17mm",
+      "brand": "Panalex",
+      "pricePerSqft": 100
+    },
+    {
+      "id": "d4",
+      "category": "door_17mm",
+      "brand": "K-board",
+      "pricePerSqft": 90
+    },
+    {
+      "id": "d5",
+      "category": "door_17mm",
+      "brand": "UV-Finish",
+      "pricePerSqft": 130
+    },
+    {
+      "id": "k1",
+      "category": "board_9mm",
+      "brand": "Century",
+      "pricePerSqft": 55
+    },
+    {
+      "id": "k2",
+      "category": "board_9mm",
+      "brand": "K-board",
+      "pricePerSqft": 45
+    },
+    {
+      "id": "m1",
+      "category": "multiwood",
+      "brand": "17mm",
+      "pricePerSqft": 80
+    },
+    {
+      "id": "m2",
+      "category": "multiwood",
+      "brand": "12mm",
+      "pricePerSqft": 65
+    },
+    {
+      "id": "m3",
+      "category": "multiwood",
+      "brand": "4mm",
+      "pricePerSqft": 40
+    },
+    {
+      "id": "1782506097607",
+      "category": "box_17mm",
+      "brand": "Century",
+      "pricePerSqft": 0
+    }
+  ],
+  "bedSizes": {
+    "king": {
+      "length": 72,
+      "width": 78,
+      "label": "King (72×78 in)"
+    },
+    "queen": {
+      "length": 60,
+      "width": 78,
+      "label": "Queen (60×78 in)"
+    }
+  },
+  "cushionHeadboardCost": 3500,
+  "company": {
+    "name": "Premium Furniture Manufacturing",
+    "address": "123 Industrial Area, City - 400001",
+    "phone": "+91 98765 43210",
+    "email": "quotes@furnitureco.com",
+    "gstin": "27AAAAA0000A1Z5"
+  }
+}

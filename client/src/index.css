@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "DM Sans", system-ui, sans-serif;
+  --font-display: "Instrument Serif", Georgia, serif;
+  --color-brand: #c17f3a;
+  --color-brand-dark: #9a6330;
+  --color-navy: #1a2332;
+}
+
+body {
+  @apply bg-stone-100 text-navy font-sans antialiased;
+}
+
+input[type="checkbox"].toggle-input {
+  @apply sr-only;
+}
+
+input[type="checkbox"].toggle-input + .toggle-track {
+  @apply relative inline-flex h-[22px] w-10 shrink-0 cursor-pointer rounded-full bg-stone-300 transition-colors;
+}
+
+input[type="checkbox"].toggle-input + .toggle-track::after {
+  content: "";
+  @apply absolute top-0.5 left-0.5 h-[18px] w-[18px] rounded-full bg-white shadow transition-transform;
+}
+
+input[type="checkbox"].toggle-input:checked + .toggle-track {
+  @apply bg-brand;
+}
+
+input[type="checkbox"].toggle-input:checked + .toggle-track::after {
+  transform: translateX(18px);
+}
+
+.client-hidden {
+  @apply opacity-40 blur-[2px] pointer-events-none select-none;
+}
