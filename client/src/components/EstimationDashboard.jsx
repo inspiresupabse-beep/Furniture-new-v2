@@ -1,8 +1,9 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import BoardSection from './BoardSection';
 import DimensionSection from './DimensionSection';
 import HardwareSection from './HardwareSection';
+import HardwareValidationModal from './HardwareValidationModal';
 import EstimatePreviewSidebar from './EstimatePreviewSidebar';
 import { useAuth } from '../context/AuthContext';
 import { calculateEstimate, formatCurrencyDetailed } from '../utils/calculations';
@@ -52,7 +53,9 @@ function EstimationDashboard({ materials, hardware }) {
   const [editingId, setEditingId] = useState(null);
   const [estimateNumber, setEstimateNumber] = useState('');
   const [lastSavedNumber, setLastSavedNumber] = useState('');
+  const [hardwareValidationErrors, setHardwareValidationErrors] = useState(null);
   const [formState, setFormState] = useState(() => createDefaultFormState(materials, hardware));
+  const hardwareSectionRef = useRef(null);
 
   const update = (patch) => setFormState((prev) => ({ ...prev, ...patch }));
 
@@ -165,22 +168,28 @@ function EstimationDashboard({ materials, hardware }) {
     if (!confirm('Reset the form to defaults?')) return;
     startNewEstimate();
     setLastSavedNumber('');
+    setHardwareValidationErrors(null);
+  };
+
+  const handleGoToHardware = () => {
+    setHardwareValidationErrors(null);
+    const el = hardwareSectionRef.current;
+    if (!el) return;
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    el.classList.add('ring-2', 'ring-amber-400', 'ring-offset-2', 'rounded-xl');
+    window.setTimeout(() => {
+      el.classList.remove('ring-2', 'ring-amber-400', 'ring-offset-2', 'rounded-xl');
+    }, 2500);
   };
 
   const handleSaveEstimate = async () => {
     const { ok, errors } = validateHardwareForSave(formState.hardwareState, hardware);
     if (!ok) {
-      const list = errors.map((e) => `• ${e.mainLabel} — ${e.typeName}`).join('\n');
-      alert(
-        'Cannot save invoice.\n\n' +
-          'For each enabled Hardware & Accessories category, every type must have a quantity ' +
-          'or be marked Unused.\n\n' +
-          'Incomplete items:\n' +
-          list
-      );
+      setHardwareValidationErrors(errors);
       return;
     }
 
+    setHardwareValidationErrors(null);
     setSaving(true);
     setSaveStatus('');
     try {
@@ -299,11 +308,13 @@ function EstimationDashboard({ materials, hardware }) {
                     value={formState.boardState}
                     onChange={(boardState) => update({ boardState })}
                   />
-                  <HardwareSection
-                    hardware={hardware}
-                    value={formState.hardwareState}
-                    onChange={(hardwareState) => update({ hardwareState })}
-                  />
+                  <div id="hardware-section" ref={hardwareSectionRef} className="scroll-mt-24 transition-shadow">
+                    <HardwareSection
+                      hardware={hardware}
+                      value={formState.hardwareState}
+                      onChange={(hardwareState) => update({ hardwareState })}
+                    />
+                  </div>
                 </div>
               </section>
 
@@ -383,6 +394,14 @@ function EstimationDashboard({ materials, hardware }) {
           )}
         </div>
       </aside>
+
+      {hardwareValidationErrors && (
+        <HardwareValidationModal
+          errors={hardwareValidationErrors}
+          onClose={() => setHardwareValidationErrors(null)}
+          onGoToHardware={handleGoToHardware}
+        />
+      )}
     </div>
   );
 }
