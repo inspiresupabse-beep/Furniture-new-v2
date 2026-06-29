@@ -18,10 +18,27 @@ export function AuthProvider({ children }) {
     let cancelled = false;
 
     async function restoreSession() {
-      try {
-        const savedToken = localStorage.getItem(TOKEN_KEY);
-        if (!savedToken) return;
+      const savedToken = localStorage.getItem(TOKEN_KEY);
+      const savedUser = localStorage.getItem(USER_KEY);
 
+      function restoreFromStorage() {
+        if (!savedToken || !savedUser) return false;
+        try {
+          setToken(savedToken);
+          setUser(JSON.parse(savedUser));
+          return true;
+        } catch {
+          clearStoredSession();
+          return false;
+        }
+      }
+
+      if (!savedToken) {
+        setReady(true);
+        return;
+      }
+
+      try {
         const res = await fetch('/api/auth/me', {
           headers: { Authorization: `Bearer ${savedToken}` },
         });
@@ -36,19 +53,15 @@ export function AuthProvider({ children }) {
           return;
         }
 
-        clearStoredSession();
-      } catch {
-        const savedToken = localStorage.getItem(TOKEN_KEY);
-        const savedUser = localStorage.getItem(USER_KEY);
-        if (savedToken && savedUser) {
-          try {
-            setToken(savedToken);
-            setUser(JSON.parse(savedUser));
-            return;
-          } catch {
-            clearStoredSession();
-          }
+        // Only clear session when token is invalid — not on server errors
+        if (res.status === 401 || res.status === 403) {
+          clearStoredSession();
+          return;
         }
+
+        restoreFromStorage();
+      } catch {
+        restoreFromStorage();
       } finally {
         if (!cancelled) setReady(true);
       }
