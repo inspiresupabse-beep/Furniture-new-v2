@@ -7,7 +7,7 @@ import EstimatePreviewSidebar from './EstimatePreviewSidebar';
 import { useAuth } from '../context/AuthContext';
 import { calculateEstimate, formatCurrencyDetailed } from '../utils/calculations';
 import { convertDimension, fromInches } from '../utils/dimensionUtils';
-import { getDefaultBedHardwareState, getDefaultWardrobeHardwareState } from '../utils/hardwareUtils';
+import { getDefaultBedHardwareState, getDefaultWardrobeHardwareState, validateHardwareForSave } from '../utils/hardwareUtils';
 import { createDefaultFormState, mergeSavedFormState } from '../utils/formState';
 import { generateQuotationPDF } from '../utils/pdfExport';
 
@@ -168,6 +168,19 @@ function EstimationDashboard({ materials, hardware }) {
   };
 
   const handleSaveEstimate = async () => {
+    const { ok, errors } = validateHardwareForSave(formState.hardwareState, hardware);
+    if (!ok) {
+      const list = errors.map((e) => `• ${e.mainLabel} — ${e.typeName}`).join('\n');
+      alert(
+        'Cannot save invoice.\n\n' +
+          'For each enabled Hardware & Accessories category, every type must have a quantity ' +
+          'or be marked Unused.\n\n' +
+          'Incomplete items:\n' +
+          list
+      );
+      return;
+    }
+
     setSaving(true);
     setSaveStatus('');
     try {

@@ -113,3 +113,40 @@ export function getCategoryTypeCount(hardware, category) {
 export function getCategoriesFromHardware(hardware) {
   return [...new Set(hardware.rates.map((r) => r.category))];
 }
+
+/** Enabled hardware rows must have qty > 0 or be marked unused before save. */
+export function getHardwareValidationErrors(state, hardware) {
+  const errors = [];
+
+  for (const category of getCategoriesFromHardware(hardware)) {
+    const section = state?.[category];
+    if (!section?.enabled) continue;
+
+    const mainLabel = getMainCategoryLabel(
+      category,
+      hardware.hardwareLabels,
+      hardware.hardwareMainLabels
+    );
+
+    for (const rate of hardware.rates.filter((r) => r.category === category)) {
+      const entry = section.entries?.[rate.id];
+      if (!entry || entry.unused) continue;
+
+      const qty = Number(entry.qty);
+      if (entry.qty === '' || entry.qty == null || Number.isNaN(qty) || qty <= 0) {
+        errors.push({
+          category,
+          mainLabel,
+          typeName: getTypeDisplayName(rate),
+        });
+      }
+    }
+  }
+
+  return errors;
+}
+
+export function validateHardwareForSave(state, hardware) {
+  const errors = getHardwareValidationErrors(state, hardware);
+  return { ok: errors.length === 0, errors };
+}
