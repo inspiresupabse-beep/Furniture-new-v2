@@ -66,6 +66,20 @@ export function boardStateToMaterials(boardState) {
   };
 }
 
+export function hasMaterialDetails(formState) {
+  const boards = formState.boardState || {};
+  const anyBoard = Object.values(boards).some((entry) => entry?.enabled);
+  if (anyBoard) return true;
+
+  const hardware = formState.hardwareState || {};
+  return Object.values(hardware).some((section) => {
+    if (!section?.enabled) return false;
+    return Object.values(section.entries || {}).some(
+      (entry) => !entry?.unused && Number(entry?.qty) > 0
+    );
+  });
+}
+
 export function getBoardMainLabel(category, materials) {
   const labels = {
     box_17mm: 'BOX 17 MM PARTICLE BOARD',

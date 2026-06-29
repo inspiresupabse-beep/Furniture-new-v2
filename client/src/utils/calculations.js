@@ -135,7 +135,7 @@ export function applyMaterialWastage(items, wastagePercent, defaultRate) {
   const pct = Number(wastagePercent) || 0;
   const baseArea = getTotalMaterialArea(items);
 
-  if (pct <= 0) {
+  if (pct <= 0 || baseArea <= 0) {
     return {
       items,
       wastageArea: 0,

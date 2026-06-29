@@ -5,11 +5,42 @@ import DimensionSection from './DimensionSection';
 import HardwareSection from './HardwareSection';
 import EstimatePreviewSidebar from './EstimatePreviewSidebar';
 import { useAuth } from '../context/AuthContext';
-import { calculateEstimate } from '../utils/calculations';
+import { calculateEstimate, formatCurrencyDetailed } from '../utils/calculations';
 import { convertDimension, fromInches } from '../utils/dimensionUtils';
 import { getDefaultBedHardwareState, getDefaultWardrobeHardwareState } from '../utils/hardwareUtils';
-import { createDefaultFormState } from '../utils/formState';
+import { createDefaultFormState, mergeSavedFormState } from '../utils/formState';
 import { generateQuotationPDF } from '../utils/pdfExport';
+
+function MaterialBreakdownCard({ estimate }) {
+  return (
+    <div className="rounded-xl border border-sky-100 bg-sky-50/60 shadow-sm print-area">
+      <div className="px-5 py-4 border-b border-sky-100">
+        <h2 className="text-base font-bold text-slate-800">Material breakdown</h2>
+      </div>
+      <div className="px-5 py-4 space-y-3">
+        {estimate.materialItems.map((item, i) => (
+          <div key={i} className="flex items-start justify-between gap-3 text-sm border-b border-sky-100/80 pb-3 last:border-0 last:pb-0">
+            <div className="min-w-0">
+              <div className="font-semibold text-slate-800">{item.name}</div>
+              <div className="text-xs text-slate-500 mt-0.5">
+                {item.isFixed
+                  ? item.spec
+                  : `${item.area.toFixed(2)} sq ft × ${formatCurrencyDetailed(item.rate)}`}
+              </div>
+            </div>
+            <div className="font-bold text-slate-800 tabular-nums shrink-0">
+              {formatCurrencyDetailed(item.cost)}
+            </div>
+          </div>
+        ))}
+        <div className="flex items-center justify-between pt-2 border-t border-sky-200 font-bold text-slate-900">
+          <span>Total material ({estimate.materialTotalArea.toFixed(2)} sq ft)</span>
+          <span className="tabular-nums">{formatCurrencyDetailed(estimate.materialCost)}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function EstimationDashboard({ materials, hardware }) {
   const { authFetch } = useAuth();
@@ -20,20 +51,38 @@ function EstimationDashboard({ materials, hardware }) {
   const [saving, setSaving] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [estimateNumber, setEstimateNumber] = useState('');
+  const [lastSavedNumber, setLastSavedNumber] = useState('');
   const [formState, setFormState] = useState(() => createDefaultFormState(materials, hardware));
 
   const update = (patch) => setFormState((prev) => ({ ...prev, ...patch }));
 
+  const startNewEstimate = () => {
+    setFormState(createDefaultFormState(materials, hardware));
+    setEditingId(null);
+    setEstimateNumber('');
+    setSaveStatus('');
+    setClientView(false);
+  };
+
   useEffect(() => {
+    if (location.state?.fresh) {
+      startNewEstimate();
+      setLastSavedNumber('');
+      navigate(location.pathname, { replace: true, state: {} });
+      return;
+    }
+
     const editEstimate = location.state?.editEstimate;
     if (editEstimate?.form_state) {
-      setFormState(editEstimate.form_state);
+      setFormState(mergeSavedFormState(editEstimate.form_state, materials, hardware));
       setEditingId(editEstimate.id);
       setEstimateNumber(editEstimate.estimate_number || '');
+      setLastSavedNumber('');
       setSaveStatus('');
+      setClientView(false);
       navigate(location.pathname, { replace: true, state: {} });
     }
-  }, [location.state, location.pathname, navigate]);
+  }, [location.state, location.pathname, navigate, materials, hardware]);
 
   const handleProductTypeChange = (type) => {
     const unit = formState.dimensionUnit;
@@ -114,11 +163,8 @@ function EstimationDashboard({ materials, hardware }) {
 
   const handleReset = () => {
     if (!confirm('Reset the form to defaults?')) return;
-    setFormState(createDefaultFormState(materials, hardware));
-    setEditingId(null);
-    setEstimateNumber('');
-    setSaveStatus('');
-    setClientView(false);
+    startNewEstimate();
+    setLastSavedNumber('');
   };
 
   const handleSaveEstimate = async () => {
@@ -132,17 +178,24 @@ function EstimationDashboard({ materials, hardware }) {
         productType: formState.productType,
         finalPrice: estimate.finalPrice,
       };
-      const url = editingId ? `/api/estimates/${editingId}` : '/api/estimates';
+      const isUpdate = Boolean(editingId);
+      const url = isUpdate ? `/api/estimates/${editingId}` : '/api/estimates';
       const res = await authFetch(url, {
-        method: editingId ? 'PUT' : 'POST',
+        method: isUpdate ? 'PUT' : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to save estimate');
-      if (!editingId) setEditingId(data.id);
-      if (data.estimate_number) setEstimateNumber(data.estimate_number);
-      setSaveStatus('saved');
+
+      if (isUpdate) {
+        if (data.estimate_number) setEstimateNumber(data.estimate_number);
+        setSaveStatus('updated');
+      } else {
+        setLastSavedNumber(data.estimate_number || '');
+        startNewEstimate();
+        setSaveStatus('saved');
+      }
     } catch (err) {
       setSaveStatus(err.message);
     } finally {
@@ -151,7 +204,7 @@ function EstimationDashboard({ materials, hardware }) {
   };
 
   const inputClass =
-    'w-full rounded-lg border border-stone-200 bg-stone-50 px-3 py-2 text-sm focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-100 disabled:opacity-60';
+    'w-full min-h-[44px] rounded-lg border border-stone-200 bg-stone-50 px-3 py-2.5 text-base leading-normal focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-100 disabled:opacity-60';
 
   return (
     <div className="dashboard-split">
@@ -241,6 +294,8 @@ function EstimationDashboard({ materials, hardware }) {
                 </div>
               </section>
 
+              <MaterialBreakdownCard estimate={estimate} />
+
               <section>
                 <h3 className="text-xs font-semibold uppercase tracking-wide text-brand-dark border-b-2 border-amber-100 pb-1 mb-3">
                   Extras & Pricing
@@ -294,10 +349,22 @@ function EstimationDashboard({ materials, hardware }) {
             saveStatus={saveStatus}
             editingId={editingId}
           />
-          {saveStatus === 'saved' && (
-            <p className="text-center text-sm text-stone-500 mt-3">
+          {saveStatus === 'saved' && lastSavedNumber && (
+            <p className="text-center text-sm text-stone-600 mt-3 no-print">
+              Saved as <span className="font-mono font-semibold text-indigo-700">{lastSavedNumber}</span>.
+              {' '}Form cleared for the next estimate.
+              {' '}
               <Link to="/reports" className="text-indigo-600 hover:underline font-medium">
-                View estimate report →
+                View report →
+              </Link>
+            </p>
+          )}
+          {saveStatus === 'updated' && (
+            <p className="text-center text-sm text-green-700 mt-3 no-print">
+              Estimate updated successfully.
+              {' '}
+              <Link to="/reports" className="text-indigo-600 hover:underline font-medium">
+                View report →
               </Link>
             </p>
           )}

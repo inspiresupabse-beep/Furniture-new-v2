@@ -10,7 +10,7 @@ function DimensionSection({
   embedded = false,
 }) {
   const inputClass =
-    'w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-sm focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-100 disabled:opacity-60';
+    'w-full min-h-[44px] rounded-lg border border-stone-200 bg-white px-3 py-2.5 text-base leading-normal focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-100 disabled:opacity-60';
 
   const content = (
     <div className={embedded ? 'space-y-4' : 'p-4 space-y-4'}>
@@ -70,13 +70,13 @@ function DimensionSection({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-3">
           {[
             { key: 'width', label: 'Width' },
             { key: 'height', label: 'Height' },
             { key: 'depth', label: 'Depth' },
           ].map(({ key, label }) => (
-            <div key={key} className="rounded-lg border border-stone-200 bg-stone-50 p-3">
+            <div key={key} className="rounded-lg border border-stone-200 bg-stone-50 p-3 min-w-0">
               <label className="block text-xs font-semibold uppercase tracking-wide text-amber-800 mb-2">
                 {label} ({formState.dimensionUnit})
               </label>
@@ -97,7 +97,7 @@ function DimensionSection({
           ))}
 
           {formState.productType === 'wardrobe' && (
-            <div className="rounded-lg border border-stone-200 bg-stone-50 p-3">
+            <div className="rounded-lg border border-stone-200 bg-stone-50 p-3 min-w-0">
               <label className="block text-xs font-semibold uppercase tracking-wide text-amber-800 mb-2">
                 Shelves / Racks ({formState.dimensionUnit})
               </label>
@@ -112,7 +112,7 @@ function DimensionSection({
             </div>
           )}
 
-          <div className="rounded-lg border border-stone-200 bg-stone-50 p-3">
+          <div className="rounded-lg border border-stone-200 bg-stone-50 p-3 min-w-0">
             <label className="block text-xs font-semibold uppercase tracking-wide text-amber-800 mb-2">
               Wastage (%)
             </label>

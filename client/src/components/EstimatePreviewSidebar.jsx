@@ -53,6 +53,7 @@ function EstimatePreviewSidebar({
 }) {
   const company = materials?.company ?? {};
   const productLabel = formState.productType === 'wardrobe' ? 'Wardrobe' : 'Bed';
+  const showHardwareBreakdown = estimate.hardwareItems.length > 0;
   const today = new Date().toLocaleDateString('en-IN', {
     day: 'numeric',
     month: 'short',
@@ -133,17 +134,19 @@ function EstimatePreviewSidebar({
           </div>
         )}
 
-        <div className="space-y-1">
-          <Row label="Hardware & Accessories" amount={estimate.hardwareCost} bold />
-          {estimate.hardwareItems.map((item, i) => (
-            <DetailRow
-              key={i}
-              label={item.name}
-              detail={`${item.qty} × ${formatCurrencyDetailed(item.unitPrice)}`}
-              amount={item.cost}
-            />
-          ))}
-        </div>
+        {showHardwareBreakdown && (
+          <div className="space-y-1">
+            <Row label="Hardware & Accessories" amount={estimate.hardwareCost} bold />
+            {estimate.hardwareItems.map((item, i) => (
+              <DetailRow
+                key={i}
+                label={item.name}
+                detail={`${item.qty} × ${formatCurrencyDetailed(item.unitPrice)}`}
+                amount={item.cost}
+              />
+            ))}
+          </div>
+        )}
 
         {estimate.transportCost > 0 && (
           <Row label="Transport" amount={estimate.transportCost} />
@@ -199,9 +202,12 @@ function EstimatePreviewSidebar({
         </button>
 
         {saveStatus === 'saved' && (
-          <p className="text-xs text-green-700 text-center">Estimate saved successfully.</p>
+          <p className="text-xs text-green-700 text-center">Estimate saved. Form ready for next invoice.</p>
         )}
-        {saveStatus && saveStatus !== 'saved' && (
+        {saveStatus === 'updated' && (
+          <p className="text-xs text-green-700 text-center">Estimate updated successfully.</p>
+        )}
+        {saveStatus && saveStatus !== 'saved' && saveStatus !== 'updated' && (
           <p className="text-xs text-red-600 text-center">{saveStatus}</p>
         )}
 
