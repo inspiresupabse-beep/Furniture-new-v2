@@ -3,7 +3,7 @@ import cors from 'cors';
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { handleSignup, handleSignin } from './handlers/auth.js';
+import { handleSignup, handleSignin, handleMe } from './handlers/auth.js';
 import {
   handleListEstimates,
   handleCreateEstimate,
@@ -69,6 +69,7 @@ app.put('/api/hardware', async (req, res) => {
 
 app.post('/api/auth/signup', (req, res) => handleSignup(req, res));
 app.post('/api/auth/signin', (req, res) => handleSignin(req, res));
+app.get('/api/auth/me', (req, res) => handleMe(req, res));
 app.get('/api/estimates', (req, res) => handleListEstimates(req, res));
 app.post('/api/estimates', (req, res) => handleCreateEstimate(req, res));
 app.get('/api/estimates/:id', (req, res) => handleGetEstimate(req, res, req.params.id));

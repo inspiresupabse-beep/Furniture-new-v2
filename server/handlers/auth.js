@@ -1,5 +1,5 @@
 import { getSupabaseAdmin } from '../supabaseAdmin.js';
-import { hashPassword, verifyPassword, signToken } from '../authUtils.js';
+import { hashPassword, verifyPassword, signToken, requireAuth } from '../authUtils.js';
 
 export async function handleSignup(req, res) {
   if (req.method !== 'POST') {
@@ -73,5 +73,33 @@ export async function handleSignin(req, res) {
   } catch (err) {
     console.error('Signin error:', err);
     return res.status(500).json({ error: err.message || 'Sign in failed' });
+  }
+}
+
+export async function handleMe(req, res) {
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  const auth = requireAuth(req, res);
+  if (!auth) return;
+
+  try {
+    const supabase = getSupabaseAdmin();
+    const { data: user, error } = await supabase
+      .from('app_users')
+      .select('id, username, created_at')
+      .eq('id', auth.userId)
+      .maybeSingle();
+
+    if (error) throw error;
+    if (!user) {
+      return res.status(401).json({ error: 'User not found' });
+    }
+
+    return res.status(200).json({ user: { id: user.id, username: user.username } });
+  } catch (err) {
+    console.error('Me error:', err);
+    return res.status(500).json({ error: err.message || 'Failed to verify session' });
   }
 }
