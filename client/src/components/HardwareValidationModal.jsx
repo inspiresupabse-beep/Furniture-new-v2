@@ -8,8 +8,13 @@ function HardwareValidationModal({ errors, onClose, onGoToHardware }) {
     const onKeyDown = (e) => {
       if (e.key === 'Escape') onClose();
     };
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
     window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener('keydown', onKeyDown);
+    };
   }, [open, onClose]);
 
   if (!open) return null;

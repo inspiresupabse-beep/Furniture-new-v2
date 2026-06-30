@@ -56,6 +56,7 @@ function EstimationDashboard({ materials, hardware }) {
   const [hardwareValidationErrors, setHardwareValidationErrors] = useState(null);
   const [formState, setFormState] = useState(() => createDefaultFormState(materials, hardware));
   const hardwareSectionRef = useRef(null);
+  const formsPaneRef = useRef(null);
 
   const update = (patch) => setFormState((prev) => ({ ...prev, ...patch }));
 
@@ -171,15 +172,34 @@ function EstimationDashboard({ materials, hardware }) {
     setHardwareValidationErrors(null);
   };
 
+  const scrollToHardwareSection = () => {
+    const target = hardwareSectionRef.current;
+    const formsPane = formsPaneRef.current;
+    if (!target) return;
+
+    const isDesktopSplit = window.matchMedia('(min-width: 1024px)').matches;
+
+    if (isDesktopSplit && formsPane) {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      const paneTop = formsPane.getBoundingClientRect().top;
+      const targetTop = target.getBoundingClientRect().top;
+      const nextScrollTop = formsPane.scrollTop + (targetTop - paneTop) - 16;
+      formsPane.scrollTo({ top: Math.max(0, nextScrollTop), behavior: 'smooth' });
+    } else {
+      const headerOffset = 80;
+      const top = target.getBoundingClientRect().top + window.scrollY - headerOffset;
+      window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+    }
+
+    target.classList.add('hardware-section-highlight');
+    window.setTimeout(() => target.classList.remove('hardware-section-highlight'), 2500);
+  };
+
   const handleGoToHardware = () => {
     setHardwareValidationErrors(null);
-    const el = hardwareSectionRef.current;
-    if (!el) return;
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    el.classList.add('ring-2', 'ring-amber-400', 'ring-offset-2', 'rounded-xl');
-    window.setTimeout(() => {
-      el.classList.remove('ring-2', 'ring-amber-400', 'ring-offset-2', 'rounded-xl');
-    }, 2500);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(scrollToHardwareSection);
+    });
   };
 
   const handleSaveEstimate = async () => {
@@ -231,7 +251,7 @@ function EstimationDashboard({ materials, hardware }) {
   return (
     <div className="dashboard-split">
       {/* Left pane — data entry */}
-      <section className="dashboard-split__forms order-2 lg:order-1">
+      <section ref={formsPaneRef} className="dashboard-split__forms order-2 lg:order-1">
         <div className="space-y-5 p-0 lg:p-5">
           {editingId && (
             <div className="rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 text-sm text-blue-800 flex items-center justify-between no-print">
@@ -308,7 +328,7 @@ function EstimationDashboard({ materials, hardware }) {
                     value={formState.boardState}
                     onChange={(boardState) => update({ boardState })}
                   />
-                  <div id="hardware-section" ref={hardwareSectionRef} className="scroll-mt-24 transition-shadow">
+                  <div id="hardware-section" ref={hardwareSectionRef} className="hardware-section-anchor">
                     <HardwareSection
                       hardware={hardware}
                       value={formState.hardwareState}
